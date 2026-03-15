@@ -21,6 +21,13 @@ spec:
         ports:
         - name: web
           containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
         livenessProbe:
           httpGet:
             path: /health # Use the health endpoint
