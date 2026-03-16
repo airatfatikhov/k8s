@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-metrics-demo
+  namespace: nginx-metrics
   labels:
     app: &app nginx
 spec:
@@ -23,3 +24,10 @@ spec:
         image: bitnami/nginx:latest
         ports:
         - containerPort: 80
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
