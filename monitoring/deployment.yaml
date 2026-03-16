@@ -25,6 +25,8 @@ spec:
         ports:
         - containerPort: 80
           name: metrics
+      nodeSelector:
+        kubernetes.io/hostname: worker-node-1.test.local
       resources:
         requests:
           cpu: 10m
