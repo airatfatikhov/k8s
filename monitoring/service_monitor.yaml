@@ -10,6 +10,9 @@ spec:
   selector:
     matchLabels:
       app: *app
+  namespaceSelector:
+    matchNames:
+      - metrics
   endpoints:
   - port: metrics
     interval: 30s
