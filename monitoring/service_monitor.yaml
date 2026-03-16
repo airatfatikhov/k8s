@@ -11,6 +11,6 @@ spec:
     matchLabels:
       app: *app
   endpoints:
-  - port: 80
+  - port: metrics
     interval: 30s
     path: /metrics
