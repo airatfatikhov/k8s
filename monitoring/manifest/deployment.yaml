@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-metrics
-  namespace: nginx-metrics
+  name: metrics
+  namespace: metrics
   labels:
-    app: &app nginx
+    app: &app metrics
 spec:
   replicas: 1
   selector:
