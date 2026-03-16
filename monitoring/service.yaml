@@ -10,8 +10,7 @@ spec:
   selector:
     app: *app
   ports:
-    - name: metrics
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: metrics
       nodePort: 30008
