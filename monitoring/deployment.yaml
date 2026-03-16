@@ -24,7 +24,6 @@ spec:
         image: bitnami/nginx:latest
         ports:
         - containerPort: 80
-          name: metrics
       resources:
         requests:
           cpu: 50m
