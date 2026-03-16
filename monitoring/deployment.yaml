@@ -23,7 +23,7 @@ spec:
       - name: nginx
         image: bitnami/nginx:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           name: metrics
       nodeSelector:
         kubernetes.io/hostname: worker-node-1.test.local
