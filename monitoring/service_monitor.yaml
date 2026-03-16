@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-service-monitor
+  namespace: nginx 
+  labels:
+    app: &app nginx
+    team: backend
+spec:
+  selector:
+    matchLabels:
+      app: *app
+  endpoints:
+  - port: 80
+    interval: 30s
+    path: /metrics
