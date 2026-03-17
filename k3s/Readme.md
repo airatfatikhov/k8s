@@ -27,4 +27,10 @@
 ## Add Agent for K3S
 ``K3S_URL=https://control-plane-1.test.local:6443 K3S_TOKEN=K101a50a06d0369761903d9300f308201c0d17efee8e7e3e17d56b90e8b54927906::server:8b7365c4a0893a2b60cf3b3d1157b000 ./install_k3s.sh``
 
-## Settings Config RKE2
+## Settings Taints
+  - create file <br>
+   ``touch /etc/rancher/k3s/config.yaml``
+  - insert strings <br>
+  ``node-taint:
+   "node-role.kubernetes.io/control-plane=true:NoSchedule"
+   "node-role.kubernetes.io/master=true:NoSchedule"``

@@ -15,6 +15,8 @@ spec:
       labels:
         app: *app
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       containers:
       - name: whoami-container
         image: traefik/whoami:v1.8.0 # Use a specific image version

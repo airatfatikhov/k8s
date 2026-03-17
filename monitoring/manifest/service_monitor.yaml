@@ -2,9 +2,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: metrics-service-monitor
-  namespace: metrics 
+  namespace: nginx
   labels:
-    app: &app metrics
+    app: &app nginx
     team: backend
 spec:
   selector:
@@ -12,7 +12,7 @@ spec:
       app: *app
   namespaceSelector:
     matchNames:
-      - metrics
+      - nginx
   endpoints:
   - port: metrics
     interval: 30s
