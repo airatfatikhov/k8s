@@ -34,3 +34,27 @@
   ``node-taint:
    "node-role.kubernetes.io/control-plane=true:NoSchedule"
    "node-role.kubernetes.io/master=true:NoSchedule"``
+
+## Install Offline
+  - download images <br>
+   ``curl -L -o k3s-airgap-images-amd64.tar.zst "https://github.com/k3s-io/k3s/releases/download/v1.33.3%2Bk3s1/k3s-airgap-images-amd64.tar.zst"``
+  - create folder
+   ``sudo mkdir -p /var/lib/rancher/k3s/agent/images/`` <br>
+   ``sudo cp k3s-airgap-images-amd64.tar.zst /var/lib/rancher/k3s/agent/images/k3s-airgap-images-amd64.tar.zst`` <br>
+  - create cache file <br>
+   ``touch /var/lib/rancher/k3s/agent/images/.cache.json`` 
+   - download binary k3s <br>
+  ``sudo curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.33.3%2Bk3s1/k3s``
+    - link bin <br>
+  ``sudo chmod +x /usr/local/bin/k3s``
+   - install offline server <br>
+   ``INSTALL_K3S_SKIP_DOWNLOAD=true ./install_k3s.sh``
+  - install offline agent
+
+## Delete k3s
+ - delete server
+ - cd /usr/local/bin/
+ - bash k3s-uninstall.sh
+ - delete agent
+ - cd /usr/local/bin/
+ - bash k3s-agent-uninstall.sh
