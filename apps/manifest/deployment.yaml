@@ -24,7 +24,7 @@ spec:
                     operator: In
                     values:
                       - whoami
-                topologyKey: "kubernetes.io/hostname"
+              topologyKey: "kubernetes.io/hostname"
       containers:
       - name: whoami-container
         image: traefik/whoami:v1.8.0 # Use a specific image version
