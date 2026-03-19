@@ -48,7 +48,7 @@ spec:
           httpGet:
             path: /health # Use the health endpoint
             port: web
-          initialDelaySeconds: 3
+          initialDelaySeconds: 5
           periodSeconds: 10
       serviceAccountName: whoami-sa  
       priorityClassName: high-priority-nonpreempting
