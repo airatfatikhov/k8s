@@ -25,7 +25,6 @@ spec:
                     values:
                       - *app
                 topologyKey: "kubernetes.io/hostname"
-      serviceAccountName: whoami-sa
       containers:
       - name: whoami-container
         image: traefik/whoami:v1.8.0 # Use a specific image version
@@ -51,3 +50,4 @@ spec:
             port: web
           initialDelaySeconds: 5
           periodSeconds: 10
+      serviceAccountName: whoami-sa  
