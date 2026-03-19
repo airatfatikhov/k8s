@@ -15,6 +15,7 @@ spec:
       labels:
         app: *app
     spec:
+      serviceAccountName: whoami-sa
       containers:
       - name: whoami-container
         image: traefik/whoami:v1.8.0 # Use a specific image version
