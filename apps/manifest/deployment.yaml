@@ -15,6 +15,16 @@ spec:
       labels:
         app: *app
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - *app
+            topologyKey: "kubernetes.io/hostname"
       serviceAccountName: whoami-sa
       containers:
       - name: whoami-container
