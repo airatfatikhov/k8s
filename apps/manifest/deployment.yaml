@@ -23,7 +23,7 @@ spec:
                   - key: app
                     operator: In
                     values:
-                      - *app
+                      - whoami
                 topologyKey: "kubernetes.io/hostname"
       containers:
       - name: whoami-container
