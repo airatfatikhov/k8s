@@ -51,3 +51,4 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
       serviceAccountName: whoami-sa  
+      priorityClassName: high-priority-nonpreempting
