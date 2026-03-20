@@ -10,6 +10,7 @@ metadata:
     prometheus.io/path: "/metrics"
     prometheus.io/port: "9113"
 spec:
+  type: NodePort
   selector:
     app: *app
   ports:
