@@ -16,7 +16,7 @@ data:
             }
             location / {
                 # Simple response for demonstration
-                return 200 'Hello from NGINX';
+                return 200 'Hello from Airat Fatikhov';
             }
         }
     }
