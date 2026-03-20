@@ -18,7 +18,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "9113"
-        checksum/config: {{ include (print $.Template.BasePath "apps-metrics/configmap.yaml") . | sha256sum }}
     spec:
       affinity:
         podAntiAffinity:
