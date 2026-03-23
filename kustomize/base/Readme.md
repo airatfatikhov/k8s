@@ -23,8 +23,6 @@
   - [4. Патч для Dev (overlays/dev/patch-registry.yaml)](#4-патч-для-dev-overlaysdevpatch-registryyaml)
   - [5. Применение](#5-применение)
 - [📊 Мониторинг и отчеты](#-мониторинг-и-отчеты)
-- [Посмотреть глобальный отчет](#посмотреть-глобальный-отчет)
-- [Детали нарушения](#детали-нарушения)
 
 ---
 
@@ -235,3 +233,5 @@ kubectl get clusterpolicyreport
 
 # Детали нарушения
 kubectl describe policyreport <name> -n <namespace>
+````
+> Airat Fatikhov 2026-03-23 18:03:34
