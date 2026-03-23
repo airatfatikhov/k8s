@@ -63,7 +63,8 @@ kubectl get pods -n kyverno
 
 Запрет создания подов без лейбла app.
 
-````apiVersion: kyverno.io/v1
+````yaml
+apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: require-app-label
@@ -88,7 +89,8 @@ spec:
 ## Мутация (Mutate)
 Автоматическое добавление securityContext для всех подов.
 
-````apiVersion: kyverno.io/v1
+````yaml
+apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: add-security-context
@@ -111,7 +113,8 @@ spec:
 
 Правило, действующее только в неймспейсе development.
 
-````apiVersion: kyverno.io/v1
+````yaml
+apiVersion: kyverno.io/v1
 kind: Policy
 metadata:
   name: require-cpu-limits
@@ -139,7 +142,8 @@ spec:
 
 Управление политиками как кодом. Позволяет иметь базовую политику и переопределять параметры (например, адрес реестра) для разных окружений (dev, prod).
 
-````policies/
+````yaml
+policies/
 ├── base/
 │   ├── kustomization.yaml
 │   └── restrict-registry.yaml
@@ -154,7 +158,8 @@ spec:
 
 ## 1. Базовая политика (base/restrict-registry.yaml)
 
-````apiVersion: kyverno.io/v1
+````yaml
+apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: restrict-registry
@@ -177,14 +182,14 @@ spec:
 
 ## 2. Базовый Kustomize (base/kustomization.yaml)
 
-````
+````yaml
 resources:
   - restrict-registry.yaml
 ````
 
 ## 3. Оверлей для Dev (overlays/dev/kustomization.yaml)
 
-````
+````yaml
 resources:
   - ../../base
 
@@ -194,7 +199,8 @@ patchesStrategicMerge:
 
 ## 4. Патч для Dev (overlays/dev/patch-registry.yaml)
 
-````apiVersion: kyverno.io/v1
+````yaml
+apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: restrict-registry
