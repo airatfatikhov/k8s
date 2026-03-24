@@ -13,4 +13,3 @@ resources:
 # Добавление общих меток
 commonLabels:
   app: whoami
-  env: prod
