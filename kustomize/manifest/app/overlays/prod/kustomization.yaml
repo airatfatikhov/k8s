@@ -8,6 +8,8 @@ resources:
 # Добавление префикса
 namePrefix: prod-
 
+
 # Патчи (изменения)
 patchesStrategicMerge:
   - replica.yaml
+  - affinity.yaml

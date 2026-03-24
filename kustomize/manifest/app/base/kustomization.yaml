@@ -5,3 +5,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - namespace.yaml
+
+# Добавление общих меток
+commonLabels:
+  app: whoami

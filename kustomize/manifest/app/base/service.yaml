@@ -3,12 +3,10 @@ kind: Service
 metadata:
   name: whoami-service
   namespace: whoami
-  labels:
-    app: &app whoami
 spec:
   type: NodePort
   selector:
-    app: *app
+    version: "1.0"
   ports:
     - protocol: TCP
       port: 80

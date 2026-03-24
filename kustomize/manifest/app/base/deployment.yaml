@@ -3,17 +3,15 @@ kind: Deployment
 metadata:
   name: whoami
   namespace: whoami
-  labels:
-    app: &app whoami
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: *app
+      version: "1.0"
   template:
     metadata:
       labels:
-        app: *app
+        version: "1.0"
     spec:
       affinity:
         podAntiAffinity:
@@ -23,7 +21,7 @@ spec:
                   - key: app
                     operator: In
                     values:
-                      - *app
+                      - prod
               topologyKey: "kubernetes.io/hostname"
       containers:
       - name: whoami-container
