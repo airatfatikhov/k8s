@@ -6,7 +6,7 @@ resources:
   - ../../base
 
 # Добавление префикса
-namePrefix: prod
+namePrefix: prod-
 
 # Патчи (изменения)
 patchesStrategicMerge:
