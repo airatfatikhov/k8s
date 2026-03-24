@@ -13,16 +13,6 @@ spec:
       labels:
         version: "1.0"
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - whoami
-              topologyKey: "kubernetes.io/hostname"
       containers:
       - name: whoami-container
         image: traefik/whoami:v1.8.0 # Use a specific image version
