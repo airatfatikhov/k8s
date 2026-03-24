@@ -7,11 +7,12 @@ spec:
   template:
     spec:
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: env
+            - labelSelector:
+                matchExpressions:
+                  - key: app
                     operator: In
                     values:
-                      - prod
+                      - whoami
+              topologyKey: "kubernetes.io/hostname"
