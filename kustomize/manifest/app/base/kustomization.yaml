@@ -5,6 +5,10 @@ resources:
   - deployment.yaml
   - service.yaml
   - namespace.yaml
+  - PriorityClass.yaml
+  - service_account.yaml
+  - role_binding.yaml
+  - role.yaml
 
 # Добавление общих меток
 commonLabels:
