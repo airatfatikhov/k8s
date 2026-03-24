@@ -1,237 +1,132 @@
-# Kyverno: Управление политиками Kubernetes
+# Kustomize: Полное руководство по управлению конфигурациями Kubernetes
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Kyverno Version](https://img.shields.io/badge/Kyverno-v1.11+-green)](https://kyverno.io/)
+[![Kustomize Version](https://img.shields.io/badge/Kustomize-v5.0+-green)](https://kustomize.io/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.20+-blue)](https://kubernetes.io/)
 
-Полное руководство по внедрению, настройке и управлению политиками безопасности и конфигурации в Kubernetes с помощью **Kyverno**. Включает примеры `ClusterPolicy`, `Policy` (namespace-scoped) и интеграцию с **Kustomize** для GitOps.
-
-## 📑 Содержание
-
-- [Kyverno: Управление политиками Kubernetes](#kyverno-управление-политиками-kubernetes)
-  - [📑 Содержание](#-содержание)
-  - [🚀 Что такое Kyverno?](#-что-такое-kyverno)
-  - [🛠 Установка](#-установка)
-  - [Режимы работы (validationFailureAction):](#режимы-работы-validationfailureaction)
-- [📝 Примеры политик](#-примеры-политик)
-  - [Валидация (Validate)](#валидация-validate)
-  - [Мутация (Mutate)](#мутация-mutate)
-  - [Namespace-scoped Policy](#namespace-scoped-policy)
-- [🧩 Интеграция с Kustomize (GitOps)](#-интеграция-с-kustomize-gitops)
-  - [1. Базовая политика (base/restrict-registry.yaml)](#1-базовая-политика-baserestrict-registryyaml)
-  - [2. Базовый Kustomize (base/kustomization.yaml)](#2-базовый-kustomize-basekustomizationyaml)
-  - [3. Оверлей для Dev (overlays/dev/kustomization.yaml)](#3-оверлей-для-dev-overlaysdevkustomizationyaml)
-  - [4. Патч для Dev (overlays/dev/patch-registry.yaml)](#4-патч-для-dev-overlaysdevpatch-registryyaml)
-  - [5. Применение](#5-применение)
-- [📊 Мониторинг и отчеты](#-мониторинг-и-отчеты)
+Полное руководство по **Kustomize** — нативному инструменту для кастомизации манифестов Kubernetes. Включает установку, примеры использования, интеграцию с GitOps и лучшие практики.
 
 ---
 
-## 🚀 Что такое Kyverno?
+## 📑 Содержание
 
-**Kyverno** (греч. "управлять") — это движок политик для Kubernetes.
-*   **Kubernetes-native:** Использует стандартные ресурсы Kubernetes (CRD).
-*   **YAML-based:** Политики пишутся на YAML (не нужно учить Rego, как в OPA).
-*   **Функционал:** Валидация, Мутация, Генерация ресурсов, Проверка образов.
+1. [Что такое Kustomize?](#-что-такое-kustomize)
+2. [Установка](#-установка)
+3. [Основные концепции](#-основные-концепции)
+4. [Структура проекта](#-структура-проекта)
+5. [Базовые примеры](#-базовые-примеры)
+   - [Base конфигурация](#base-конфигурация)
+   - [Overlays (наложения)](#overlays-наложения)
+   - [Патчи (Patches)](#патчи-patches)
+6. [Генераторы ресурсов](#-генераторы-ресурсов)
+   - [ConfigMapGenerator](#configmapgenerator)
+   - [SecretGenerator](#secretgenerator)
+7. [Продвинутые возможности](#-продвинутые-возможности)
+8. [Интеграция с GitOps](#-интеграция-с-gitops)
+9. [Полезные команды](#-полезные-команды)
+10. [Лучшие практики](#-лучшие-практики)
+11. [Частые ошибки](#-частые-ошибки)
+
+---
+
+## 🚀 Что такое Kustomize?
+
+**Kustomize** — это инструмент для кастомизации конфигураций Kubernetes, который:
+
+| Характеристика | Описание |
+| :--- | :--- |
+| **Нативный** | Встроен в `kubectl` (команда `kubectl apply -k`) |
+| **Без шаблонов** | Не использует шаблонизацию (в отличие от Helm) |
+| **Декларативный** | Конфигурация описывается в YAML |
+| **Наследование** | Позволяет создавать базовые конфигурации и переопределять их |
+| **GitOps-friendly** | Идеально подходит для ArgoCD, Flux и других инструментов |
+
+### Kustomize vs Helm
+
+| Критерий | Kustomize | Helm |
+| :--- | :--- | :--- |
+| **Шаблонизация** | Нет (чистый YAML) | Да (Go templates) |
+| **Сложность** | Низкая | Средняя/Высокая |
+| **Пакетный менеджер** | Нет | Да (Charts) |
+| **Встроен в kubectl** | Да | Нет |
+| **Лучше для** | Кастомизации существующих манифестов | Упаковки и распространения приложений |
 
 ---
 
 ## 🛠 Установка
 
-Рекомендуемый способ установки — через Helm.
+### Проверка версии (встроен в kubectl)
 
 ```bash
-# Добавление репозитория
-helm repo add kyverno https://kyverno.github.io/kyverno/
-helm repo update
-
-# Установка в отдельный неймспейс
-helm install kyverno kyverno/kyverno -n kyverno --create-namespace --wait
-
-# Проверка статуса
-kubectl get pods -n kyverno
+kubectl version --client
+kustomize version
 ````
 
-## Режимы работы (validationFailureAction):
-* **Enforce:** Блокировать запрос при нарушении.
-* **Audit:** Разрешить запрос, но записать нарушение в отчет.
+## Быстрый старт (Hello World)
 
-# 📝 Примеры политик
+Создадим простую структуру:
 
-## Валидация (Validate)
+````
+my-app/
+├── deployment.yaml
+├── service.yaml
+└── kustomization.yaml
+````
 
-Запрет создания подов без лейбла app.
-
+### 1. deployment.yaml
 ````yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: require-app-label
+  name: my-deployment
 spec:
-  validationFailureAction: Enforce
-  background: true
-  rules:
-    - name: check-app-label
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      validate:
-        message: "Лейбл 'app' обязателен для всех подов!"
-        pattern:
-          metadata:
-            labels:
-              app: "?*"
-````
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+ ````       
 
-## Мутация (Mutate)
-Автоматическое добавление securityContext для всех подов.
-
-````yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+ ### 2. service.yaml
+ ````yaml
+ apiVersion: v1
+kind: Service
 metadata:
-  name: add-security-context
+  name: my-service
 spec:
-  rules:
-    - name: add-run-as-non-root
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      mutate:
-        patchStrategicMerge:
-          spec:
-            securityContext:
-              runAsNonRoot: true
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
 ````
 
-## Namespace-scoped Policy
-
-Правило, действующее только в неймспейсе development.
+### 3. kustomization.yaml
 
 ````yaml
-apiVersion: kyverno.io/v1
-kind: Policy
-metadata:
-  name: require-cpu-limits
-  namespace: development # Важно: политика живет только здесь
-spec:
-  validationFailureAction: Audit
-  rules:
-    - name: cpu-limits-required
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      validate:
-        message: "CPU limits обязательны в dev окружении"
-        pattern:
-          spec:
-            containers:
-              - resources:
-                  limits:
-                    cpu: "?*"
-````
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
-# 🧩 Интеграция с Kustomize (GitOps)
-
-Управление политиками как кодом. Позволяет иметь базовую политику и переопределять параметры (например, адрес реестра) для разных окружений (dev, prod).
-
-````yaml
-policies/
-├── base/
-│   ├── kustomization.yaml
-│   └── restrict-registry.yaml
-└── overlays/
-    ├── dev/
-    │   ├── kustomization.yaml
-    │   └── patch-registry.yaml
-    └── prod/
-        ├── kustomization.yaml
-        └── patch-registry.yaml
-````
-
-## 1. Базовая политика (base/restrict-registry.yaml)
-
-````yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: restrict-registry
-spec:
-  validationFailureAction: Enforce
-  rules:
-    - name: validate-registry
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      validate:
-        message: "Недоверенный реестр образов"
-        pattern:
-          spec:
-            containers:
-              - image: "PLACEHOLDER_REGISTRY/*"
-````
-
-## 2. Базовый Kustomize (base/kustomization.yaml)
-
-````yaml
 resources:
-  - restrict-registry.yaml
-````
+  - deployment.yaml
+  - service.yaml
+ ````
 
-## 3. Оверлей для Dev (overlays/dev/kustomization.yaml)
+ ### Применение:
 
-````yaml
-resources:
-  - ../../base
+ ````
+ # Просмотр итогового YAML
+kubectl kustomize .
 
-patchesStrategicMerge:
-  - patch-registry.yaml
-```` 
-
-## 4. Патч для Dev (overlays/dev/patch-registry.yaml)
-
-````yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: restrict-registry
-spec:
-  rules:
-    - name: validate-registry
-      validate:
-        pattern:
-          spec:
-            containers:
-              - image: "dev-registry.internal.com/*"
-````
-
-## 5. Применение
-
-````# Применить политику для DEV
-kustomize build policies/overlays/dev | kubectl apply -f -
-
-# Применить политику для PROD
-kustomize build policies/overlays/prod | kubectl apply -f -
-````
-
-# 📊 Мониторинг и отчеты
-
-Kyverno автоматически генерирует отчеты о соответствии.
-
-````# Посмотреть отчеты по неймспейсам
-kubectl get policyreport -A
-
-# Посмотреть глобальный отчет
-kubectl get clusterpolicyreport
-
-# Детали нарушения
-kubectl describe policyreport <name> -n <namespace>
-````
-> Airat Fatikhov 2026-03-23 18:03:34
+# Применение в кластер
+kubectl apply -k . 
