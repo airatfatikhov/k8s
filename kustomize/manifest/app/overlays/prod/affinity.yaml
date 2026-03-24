@@ -11,7 +11,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchExpressions:
-                  - key: environment
+                  - key: env
                     operator: In
                     values:
                       - prod
