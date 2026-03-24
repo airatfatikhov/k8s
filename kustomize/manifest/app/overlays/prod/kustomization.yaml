@@ -11,6 +11,7 @@ namePrefix: prod-
 # Добавление общих меток
 commonLabels:
   app: whoami
+  environment: prod
 
 # Патчи (изменения)
 patchesStrategicMerge:
