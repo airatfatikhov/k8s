@@ -7,10 +7,10 @@ spec:
   template:
     spec:
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: env
                     operator: In
                     values:
