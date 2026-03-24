@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: whoami
+  labels:
+    app: &app whoami
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    metadata:
+      labels:
+        app: *app
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - *app
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: whoami-container
+        image: traefik/whoami:v1.8.0 # Use a specific image version
+        ports:
+        - name: web
+          containerPort: 80
+        resources:
+          requests:
+            cpu: 40m
+            memory: 20Mi
+          limits:
+            cpu: 90m
+            memory: 90Mi
+        livenessProbe:
+          httpGet:
+            path: /health # Use the health endpoint
+            port: web
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health # Use the health endpoint
+            port: web
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      serviceAccountName: whoami-sa  
+      priorityClassName: high-priority-nonpreempting
